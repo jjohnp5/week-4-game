@@ -56,7 +56,6 @@ function start(){
         $(".characters").append($(`<div class="col-${Math.floor(12/characters.length)}"><img class="img-responsive char" src="${char.img}" alt="${char.name}" ><h4>${char.health}</h4></div>`));
     }
     $('.char').on('click', function(){
-        console.log($(this).attr("alt"))
         characters.forEach((char, index) => {
             if($(this).attr("alt") == char.name){
                 selection = char;
@@ -91,8 +90,6 @@ function attackHandler(){
     selection.attack += selection.attackIncrease;
     selection.health -= defender.cAttack;
     updateCharAndDefenderImages();
-    console.log(defaultCharacters);
-        console.log("clone", characters);
     //check if one of chars die.
     // debugger;
     if(currentDefenders.length == 0){
@@ -134,12 +131,8 @@ function handleDefender(){
     $('.char-defenders').on("click", function(){
         var currentThis = $(this);
         currentDefenders.forEach((char, index) => {
-            console.log("base this", $(this));
-            console.log("outside if", currentThis);
             if(currentThis.attr("alt") == char.name){
-                console.log("inside if", currentThis);
                 defender = char;
-                console.log(defender);
                 $('.current-defender').append(`<div class="col-4"><img class="img-responsive char-defender" src="${char.img}" alt="${char.name}" ><h4>${char.health}</h4></div>`)
                 currentDefenders.splice(index, 1);
                 $('.attack-button').on('click', attackHandler);
@@ -149,7 +142,6 @@ function handleDefender(){
         });
         $('char-defenders').off();
         $('.defenders').empty();
-        console.log("def", currentDefenders);
         
     })
 
