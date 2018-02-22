@@ -12,10 +12,10 @@ var defaultCharacters = [
         id: 2,
         name: "Ashe",
         img: "http://ddragon.leagueoflegends.com/cdn/8.3.1/img/champion/Ashe.png",
-        attack: 10,
-        attackIncrease: 10,
+        attack: 8,
+        attackIncrease: 8,
         cAttack: 16,
-        health: 160
+        health: 150
     },
     {
         id: 3,
@@ -52,6 +52,7 @@ function start(){
     currentDefenders = [];
     $('.selection').empty();
     $('.current-defender').empty();
+    $(".characters").removeClass("display");
     for(let char of characters){
         $(".characters").append($(`<div class="col-${Math.floor(12/characters.length)}"><img class="img-responsive char" src="${char.img}" alt="${char.name}" ><h4>${char.health}</h4></div>`));
     }
@@ -60,7 +61,8 @@ function start(){
             if($(this).attr("alt") == char.name){
                 selection = char;
                 
-                $('.selection').append($(`<div class="col-4"><img class="img-responsive char-selected" src="${char.img}" alt="${char.name}" ><h4>${char.health}</h4></div>`));
+                $('.selection').append($(`<div class="col-4 offset-4"><img class="img-responsive char-selected" src="${char.img}" alt="${char.name}" ><div class="hp-selected" data-max="${char.health}" style="height: 5px; width: ${(char.health/char.health)*100 }%; background-color: green;"></div><h4>${char.health}</h4></div>`));
+                $(".characters").addClass("display");
             }else{
                 currentDefenders.push(char);
             }
@@ -92,14 +94,15 @@ function attackHandler(){
     updateCharAndDefenderImages();
     //check if one of chars die.
     // debugger;
+    $('.hp-selected').css({"width" : (selection.health/$('.hp-selected').data('max'))*100 + "%"});
+    $('.hp-defender').css({"width" : (defender.health/$('.hp-defender').data('max'))*100 + "%"});
     if(currentDefenders.length == 0){
         const play = confirm('You killed all defenders! Congratulations! Play Again?') 
         if(play){
             start();
         }
         $('.attack-button').off();
-    }
-    if(selection.health <= 0){
+    }else if(selection.health <= 0){
         const play = confirm('You died! Game Over. Play again?')
         if(play){
             start();
@@ -125,6 +128,7 @@ function renderDefenders(){
     currentDefenders.forEach(function(char, index){
 
         $('.defenders').append(`<div class="col-4"><img class="img-responsive char-defenders" src="${char.img}" alt="${char.name}" ><h4>${char.health}</h4></div>`);
+        $('.defenders').removeClass('display');
     })
 }
 function handleDefender(){
@@ -133,10 +137,12 @@ function handleDefender(){
         currentDefenders.forEach((char, index) => {
             if(currentThis.attr("alt") == char.name){
                 defender = char;
-                $('.current-defender').append(`<div class="col-4"><img class="img-responsive char-defender" src="${char.img}" alt="${char.name}" ><h4>${char.health}</h4></div>`)
+                $('.current-defender').append(`<div class="col-4 offset-4"><img class="img-responsive char-defender" src="${char.img}" alt="${char.name}" ><div class="hp-defender" data-max="${char.health}" style="height: 5px; width: ${(char.health/char.health)*100 }%; background-color: green;"></div><h4>${char.health}</h4></div>`)
                 currentDefenders.splice(index, 1);
                 $('.attack-button').on('click', attackHandler);
                 $('.defender-header').text('Current Defender');
+                $('.defenders').addClass('display');
+
             }
             
         });
